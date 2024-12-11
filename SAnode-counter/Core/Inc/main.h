@@ -57,9 +57,15 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define LED_Pin GPIO_PIN_13
+#define LED_GPIO_Port GPIOC
+#define NRF_CE_Pin GPIO_PIN_3
+#define NRF_CE_GPIO_Port GPIOA
+#define SPI1_CSN_Pin GPIO_PIN_4
+#define SPI1_CSN_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
-
+#define RF24payloadlen  14
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
