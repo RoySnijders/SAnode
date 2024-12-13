@@ -90,13 +90,15 @@ typedef struct RFspiMISOs {
 //   registers use notation B<X>, where "B" represents "byte" and <X> is the byte
 //   number.
 ////////////////////////////////////////////////////////////////////////////////////
-#define NRF24L01_CONFIG_DEFAULT_VAL			0x08
+#define NRF24L01_CONFIG_DEFAULT_VAL			0x08	// enable CRC
 #define NRF24L01_EN_AA_DEFAULT_VAL			0x3F
 #define NRF24L01_EN_RXADDR_DEFAULT_VAL		0x03
 #define NRF24L01_SETUP_AW_DEFAULT_VAL		0x03
 #define NRF24L01_SETUP_RETR_DEFAULT_VAL		0x03
 #define NRF24L01_RF_CH_DEFAULT_VAL			0x02
-#define NRF24L01_RF_SETUP_DEFAULT_VAL		0x26 //RF_DR_LOW=1=250kBps, RF_PWR=11=0dBm    0010 0110 = 0x26
+#define NRF24L01_RF_SETUP_DEFAULT_VAL		0x26 	//0x26 = 0010 0110
+													// bit5		=1 	= Set RF Data Rate to 250kbps. See RF_DR_HIGH for encoding.RF_DR_LOW=1=250kBps
+													// bit 1:2 	=1 	= RF_PWR=11=0dBm (max)
 #define NRF24L01_STATUS_DEFAULT_VAL			0x0E
 #define NRF24L01_OBSERVE_TX_DEFAULT_VAL		0x00
 #define NRF24L01_CD_DEFAULT_VAL				0x00

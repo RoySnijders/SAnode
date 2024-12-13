@@ -92,8 +92,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   HAL_Delay(300);
-  NRF24L01_Init(RF24payloadlen,NRF24L01_VAL_AUTO_ACK_OFF);				//payload length P0=16, others are 0
-  HAL_Delay(300);
+  NRF24L01_Init(RF24payloadlen,NRF24L01_VAL_AUTO_ACK_OFF);				//Use default settings and address
+  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	// payload length P0=16, others are 0
 
   //NRF24L01_RXmode(NRF24L01_CONFIG_DEFAULT_VAL);						//resume normal operation as an RX
   NRF24L01_TXmode(NRF24L01_CONFIG_DEFAULT_VAL);							//change the device to a TX to send back from the other 24L01

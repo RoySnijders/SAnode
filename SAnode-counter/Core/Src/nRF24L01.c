@@ -22,19 +22,19 @@ void NRF24L01_Init (uint8_t rx_pw_p0, uint8_t auto_ack)
 		data[0] = NRF24L01_EN_AA_ENAA_NONE;
     NRF24L01_WriteRegister(NRF24L01_EN_AA, data, 1);                //Enable ?Auto Acknowledgment? Function Disable this functionality to be compatible with nRF2401
 
-    data[0] = NRF24L01_EN_RXADDR_DEFAULT_VAL;                       //data=0x03 = Enable data pipe 0 and Enable data pipe 1
+    data[0] = NRF24L01_EN_RXADDR_DEFAULT_VAL;                       //0x03 = Enable data pipe 0 and Enable data pipe 1
 	NRF24L01_WriteRegister(NRF24L01_EN_RXADDR, data, 1);
 
-	data[0] = NRF24L01_SETUP_AW_DEFAULT_VAL;                        //data=0x03 = RX/TX Address field width '00' - Illegal, '01' - 3 bytes, '10' - 4 bytes, '11' = 5 bytes
+	data[0] = NRF24L01_SETUP_AW_DEFAULT_VAL;                        //0x03 = RX/TX Address field width '00' - Illegal, '01' - 3 bytes, '10' - 4 bytes, '11' = 5 bytes
 	NRF24L01_WriteRegister(NRF24L01_SETUP_AW, data, 1);
 
-	data[0] = NRF24L01_SETUP_RETR_DEFAULT_VAL;                      //data=0x03 = 3 Auto Retransmit Count
+	data[0] = NRF24L01_SETUP_RETR_DEFAULT_VAL;                      //0x03 = 3 Auto Retransmit Count
 	NRF24L01_WriteRegister(NRF24L01_SETUP_RETR, data, 1);
 
-	data[0] = NRF24L01_RF_CH_DEFAULT_VAL;                           //data=0x02 = ch2 default
+	data[0] = NRF24L01_RF_CH_DEFAULT_VAL;                           //0x02 = ch2 default
 	NRF24L01_WriteRegister(NRF24L01_RF_CH, data, 1);
 
-	data[0] = NRF24L01_RF_SETUP_DEFAULT_VAL;                        //data=0x0F = '11' ? 0dBm, ?01? ? 2Mbps
+	data[0] = NRF24L01_RF_SETUP_DEFAULT_VAL;                        //=0x0F = '11' ? 0dBm, ?01? ? 2Mbps
 	NRF24L01_WriteRegister(NRF24L01_RF_SETUP, data, 1);
     
     
@@ -95,7 +95,7 @@ void NRF24L01_Init (uint8_t rx_pw_p0, uint8_t auto_ack)
 	data[0] = NRF24L01_RX_PW_P5_DEFAULT_VAL;                //payload length P5 =0
 	NRF24L01_WriteRegister(NRF24L01_RX_PW_P5, data, 1);
 
-    //NRF24L01_PWR_UP();                					   //power up with DEFAULT CONFIG setting, IRQ is active (0000)
+    NRF24L01_PWR_UP();                					   //power up with DEFAULT CONFIG setting, IRQ is active (0000)
 }
 
 
@@ -186,8 +186,8 @@ void NRF24L01_PWR_DOWN(void)
 void NRF24L01_TXmode(uint8_t input)
 {	uint8_t config=input;
 
-	config |= NRF24L01_CONFIG_PWR_UP;
-    config &= ~(NRF24L01_CONFIG_PRIM_RX);           //clear flag for TX
+	config |= NRF24L01_CONFIG_PWR_UP;				//power up
+    config &= ~(NRF24L01_CONFIG_PRIM_RX);           //PRIM_RX = 0 = transmit mode
     
     NRF24L01_WriteRegister(NRF24L01_CONFIG, &config, 1);
     NRF24L01_FlushRX();
