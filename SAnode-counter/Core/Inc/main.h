@@ -41,6 +41,15 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
+#define	NRF_OFF					0
+#define	NRF_STANDBY1			0
+#define	NRF_STANDBY2			0
+#define	NRF_TX_DATA				0
+#define	NRF_TX_DATA				0
+#define	NRF_RX					0
+#define	NRF_					0
+#define	NRF_OFF					0
+#define	NRF_CONSTANTCARRIER		0
 
 /* USER CODE END EC */
 
@@ -53,7 +62,7 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+void delay_us (uint16_t us);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -61,11 +70,12 @@ void Error_Handler(void);
 #define LED_GPIO_Port GPIOC
 #define NRF_CE_Pin GPIO_PIN_3
 #define NRF_CE_GPIO_Port GPIOA
-#define SPI1_CSN_Pin GPIO_PIN_4
-#define SPI1_CSN_GPIO_Port GPIOA
+#define NRF_CSN_Pin GPIO_PIN_4
+#define NRF_CSN_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
-#define RF24payloadlen  14
+#define RF24payloadlen  1
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

@@ -32,6 +32,8 @@ typedef struct RFspiMISOs {
 #define NRF24L01_VAL_TRANSMITHOLD       0x00
 #define NRF24L01_VAL_TRANSMITDIRECT     0x01
 
+#define NRF24L01_NUMBER_CHANNELS		126	// 0 to 125 = 126 channels
+
 
 ////////////////////////////////////////////////////////////////////////////////////
 // SPI commands
@@ -286,25 +288,28 @@ typedef struct RFspiMISOs {
 
 
 
-void NRF24L01_Init (uint8_t p0_payload_width, uint8_t auto_ack);
+uint8_t NRF24L01_Init (uint8_t p0_payload_width, uint8_t auto_ack);
+uint8_t NRF24L01_Scan(void);
 
-unsigned char NRF24L01_WriteRegister(uint8_t reg, uint8_t * data, uint16_t len);
-unsigned char NRF24L01_ReadRegister(uint8_t reg, uint8_t * data, uint16_t len);
-unsigned char NRF24L01_ExecuteCommand(uint8_t instruction, uint8_t * data, uint8_t rw , uint16_t len);
+uint8_t NRF24L01_WriteRegister(uint8_t reg, uint8_t * data, uint16_t len);
+uint8_t NRF24L01_ReadRegister(uint8_t reg, uint8_t * data, uint16_t len);
+uint8_t NRF24L01_ExecuteCommand(uint8_t instruction, uint8_t * data, uint8_t rw , uint16_t len);
 
+uint8_t NRF24L01_ReadStatus(void);
 
-unsigned char NRF24L01_ReadStatus(void);
+uint8_t NRF24L01_ReadRFSetup(void);
+uint8_t NRF24L01_ReadRF_CH(void);
 
-unsigned char NRF24L01_ReadRFSetup(void);
-unsigned char NRF24L01_WriteRFSetup(uint8_t * data);
+uint8_t NRF24L01_WriteRFSetup(uint8_t * data);
+uint8_t NRF24L01_WriteRFChannel(uint8_t * data);
 
-unsigned char NRF24L01_ReadConfig(void);
+uint8_t NRF24L01_ReadConfig(void);
 
 void NRF24L01_PWR_UP(void);
 void NRF24L01_PWR_DOWN(void);
 void NRF24L01_TXmode(uint8_t config);
-void NRF24L01_RXmode(uint8_t config);
 
+void NRF24L01_RXmode(void);
         
 
 uint8_t NRF24L01_WriteTX_Payload(uint8_t * data, uint16_t len, uint8_t transmitdirect);
@@ -313,6 +318,9 @@ void NRF24L01_TX_transmit();
 
 uint8_t NRF24L01_ReadRX_Payload(uint8_t * data, uint16_t len);
 uint8_t NRF24L01_FlushRX();
+
+uint8_t NRF24L01ReadDataReady(uint8_t * data, uint16_t len);
+
 uint8_t NRF24L01_ReadRPD(void);
 
 uint8_t NRF24L01_IRQ_RX_DR_Active(void);
