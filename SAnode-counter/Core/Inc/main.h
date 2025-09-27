@@ -74,7 +74,7 @@ void delay_us (uint16_t us);
 #define NRF_CSN_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
-#define RF24payloadlen  1
+
 
 /* USER CODE END Private defines */
 

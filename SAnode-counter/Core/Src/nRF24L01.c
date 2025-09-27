@@ -54,7 +54,7 @@ uint8_t NRF24L01_ReadRegister(uint8_t reg, uint8_t * data, uint16_t len)
 
 
 //--------------------------------------------------------------------------------------
-// Init the RF module with defaut values
+// Init the RF module with defauft values
 //--------------------------------------------------------------------------------------
 uint8_t NRF24L01_Init (uint8_t rx_pw_p0, uint8_t auto_ack)
 {	uint8_t data[50];

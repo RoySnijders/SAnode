@@ -22,6 +22,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "nRF24L01.h"
+#include "stdio.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -31,7 +33,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define RF24payloadlen  10
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -95,10 +97,16 @@ int main(void)
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
 
-  HAL_TIM_Base_Start(&htim1);			//start/enable
-  HAL_Delay(300);
+  HAL_TIM_Base_Start(&htim1);			//start/enable TMR1 for Delay_us function
+  HAL_Delay(300);						//Wait 300ms
+
+  uint8_t 	counter=0,readback; // init value
+  char 		string[RF24payloadlen+1];
+  uint8_t	RF24payload[RF24payloadlen];
+
+
   // Init NRF with default settings and address payload length P0=16, others are 0
-  // After init, the module is POWER UP
+  // After init, the module is POWER UP in listing mode
   if(NRF24L01_Init(RF24payloadlen,NRF24L01_VAL_AUTO_ACK_OFF)!=0)
   {	//error in Init of NRF
 	  while(1)
@@ -107,25 +115,24 @@ int main(void)
 	  }
   }
 
-//  uint8_t ena= NRF24L01_EN_AA_ENAA_NONE;
-//  NRF24L01_WriteRegister(NRF24L01_EN_AA, &ena, 1);
-//
-//
-//  NRF24L01_PWR_UP();									// Set PWR_UP bit and wait 1.5ms to go to Standby-I mode
-//  NRF24L01_RXmode();									// Go from Standby mode to RX mode
-//  NRF24L01_DISABLE; 									// Stop listening goto to Standby-I state
-  //NRF24L01_Scan();										// Scan full range
+  NRF24L01_DISABLE;					// Stop goto to Standby-I state
+  HAL_Delay(300);					//Wait 300ms
+  NRF24L01_TXmode(0x0b);
 
-  uint8_t counter=8; // init value
+  readback=NRF24L01_ReadConfig();
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
-  {
-	  NRF24L01_WriteTX_Payload(&counter, RF24payloadlen, NRF24L01_VAL_TRANSMITDIRECT);
-	  counter++;
+  {	  sprintf(string,"Hello%d",counter++);
+	  for(uint8_t i=0;i<RF24payloadlen;i++)
+		  RF24payload[i]=(uint8_t) string[i];
+
+	  NRF24L01_WriteTX_Payload(RF24payload, RF24payloadlen, NRF24L01_VAL_TRANSMITDIRECT);
+
+	  readback=NRF24L01_ReadConfig();
 	  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
 	  HAL_Delay(1000);
     /* USER CODE END WHILE */
