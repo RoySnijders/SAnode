@@ -54,7 +54,7 @@ uint8_t NRF24L01_ReadRegister(uint8_t reg, uint8_t * data, uint16_t len)
 
 
 //--------------------------------------------------------------------------------------
-// Init the RF module with defauft values
+// Init the RF module with defaut values
 //--------------------------------------------------------------------------------------
 uint8_t NRF24L01_Init (uint8_t rx_pw_p0, uint8_t auto_ack)
 {	uint8_t data[50];
@@ -363,28 +363,52 @@ void NRF24L01_RXmode(void)
 ///			Auto-ACK being disabled and the packet being dropped after retries.
 //
 uint8_t NRF24L01_WriteTX_Payload(uint8_t * data, uint16_t len, uint8_t transmitdirect)
-{	uint8_t status,fifo;
+{	uint8_t status,localdata;
 
+// 1. Flush old data
+    NRF24L01_FlushTX();
+
+    // 2. Write new payload
     status = NRF24L01_ExecuteCommand(NRF24L01_W_TX_PAYLOAD, data, NRF24L01_WRITE,len);
-	if(transmitdirect == NRF24L01_VAL_TRANSMITDIRECT)
+
+    // 3. Pulse CE to start TX
+    if(transmitdirect == NRF24L01_VAL_TRANSMITDIRECT)
 		NRF24L01_TX_transmit();         //Once you load the packet, toggle the CE pin to send the packet (keeping it high for at least 10 us).
 
-	status = NRF24L01_ReadRegister(NRF24L01_FIFO_STATUS, &fifo, 1);
+    // 4. Wait for transmission to complete
+   	// (polling STATUS, better: use IRQ pin)
+    do {
+    	status = NRF24L01_ReadRegister(NRF24L01_FIFO_STATUS, &localdata, 1);
+    } while (!(localdata & (NRF24L01_STATUS_TX_DS | NRF24L01_STATUS_MAX_RT)));
+
 
 //	Transmission Confirmation:
 //	The STATUS register is monitored for the following flags:
 //	TX_DS (Data Sent): Indicates successful transmission.
 //	MAX_RT (Maximum Retries): Indicates that the maximum number of retries was reached without acknowledgment.
 
-	return status;
+
+    // 5. Clear interrupt flags
+    NRF24L01_IRQ_ClearAll();
+    //data=0|NRF24L01_STATUS_TX_DS |NRF24L01_STATUS_MAX_RT;
+	//NRF24L01_WriteRegister(NRF24L01_STATUS, ,1);
+
+	// 6. Check result
+	if (status & NRF24L01_STATUS_TX_DS)
+	{	return 1;   // success
+	 } else if (status & NRF24L01_STATUS_MAX_RT)
+	 {	NRF24L01_FlushTX();
+	    return 0;   // failed after retries
+	 }
 }
+
 
 //Transmits the current tx payload
 //Transmission Start: Transmission begins when the CE (Chip Enable) pin is toggled high for a short duration (typically >10µs).
 void NRF24L01_TX_transmit()
 {	NRF24L01_ENABLE;
-	delay_us(200);
-    NRF24L01_DISABLE;
+	HAL_Delay(1);  // >10µs needed, 1ms is safe
+	NRF24L01_DISABLE;
 }
 
 //Flush TX buffer
@@ -413,7 +437,7 @@ uint8_t NRF24L01_FlushRX()
 
 uint8_t NRF24L01ReadDataReady(uint8_t * data, uint16_t len)
 {	uint8_t val;
-	uint8_t status;
+	//uint8_t status;
 
 	//Check via interrupt
 	//The RX_DR IRQ is asserted by a new packet arrival event. The procedure for handling this interrupt should be:
@@ -424,14 +448,15 @@ uint8_t NRF24L01ReadDataReady(uint8_t * data, uint16_t len)
 	//NRF24L01_ExecuteCommand(NRF24L01_STATUS, &val,  NRF24L01_READ, 1);
 
 	//Check FIFO not empty
-	NRF24L01_ExecuteCommand(NRF24L01_FIFO_STATUS, &val,  NRF24L01_READ, 1);
+	NRF24L01_ExecuteCommand(NRF24L01_FIFO_STATUS, &val,  NRF24L01_READ, 1);	//read FIFO and put in "val"
 
-	if((val&NRF24L01_FIFO_STATUS_RX_EMPTY)==0)
-	{	//FIFO is not empty , 1: RX FIFO empty.	0: Data in RX FIFO.
-		status = NRF24L01_ExecuteCommand(NRF24L01_R_RX_PAYLOAD, data,  NRF24L01_READ, len); //read payload
+	if((val&NRF24L01_FIFO_STATUS_RX_EMPTY)==0) //FIFO is not empty register , 1: RX FIFO empty.	0: Data in RX FIFO.
+	{	// There is data
+		NRF24L01_ExecuteCommand(NRF24L01_R_RX_PAYLOAD, data,  NRF24L01_READ, len); //read payload
 		NRF24L01_IRQ_ClearRX_DR();	//After reading a payload, you must clear the RX_DR bit in the STATUS register by writing 1 to it.
+		return (1);
 	}
-	return (status);
+	return (0);
 }
 
 

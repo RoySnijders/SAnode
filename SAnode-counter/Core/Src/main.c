@@ -98,7 +98,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   HAL_TIM_Base_Start(&htim1);			//start/enable TMR1 for Delay_us function
-  HAL_Delay(300);						//Wait 300ms
+  	  	  	  	  	  	  	  	  	  //Timer1 needs to be at 1us (32MHz, prescaler=31+1)
+  HAL_Delay(300);						//Wait till everything has boot up 300ms to 1000ms
 
   uint8_t 	counter=0,readback; // init value
   char 		string[RF24payloadlen+1];
@@ -117,7 +118,9 @@ int main(void)
 
   NRF24L01_DISABLE;					// Stop goto to Standby-I state
   HAL_Delay(300);					//Wait 300ms
-  NRF24L01_TXmode(0x0b);
+  NRF24L01_TXmode(NRF24L01_CONFIG_DEFAULT_VAL);							//change the device to a TX to send back from the other 24L01
+  NRF24L01_IRQ_ClearAll();												//clear interrupts again
+  NRF24L01_ENABLE;														//CE / enable
 
   readback=NRF24L01_ReadConfig();
 
@@ -126,7 +129,7 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
-  {	  sprintf(string,"Hello%d",counter++);
+  {	  sprintf(string,"Hello: %3d",counter++);
 	  for(uint8_t i=0;i<RF24payloadlen;i++)
 		  RF24payload[i]=(uint8_t) string[i];
 
