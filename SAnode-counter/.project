@@ -29,4 +29,16 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>Core/Inc/nRF24L01.h</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Common-C/Inc/nRF24L01.h</locationURI>
+		</link>
+		<link>
+			<name>Core/Src/nRF24L01.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Common-C/Src/nRF24L01.c</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>

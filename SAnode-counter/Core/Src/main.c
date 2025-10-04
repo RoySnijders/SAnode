@@ -13,6 +13,16 @@
   * in the root directory of this software component.
   * If no LICENSE file comes with this software, it is provided AS-IS.
   *
+  *
+  *
+  *
+  * Include Common-C files
+  * Right-click your STM32 project → Properties, Go to C/C++ General → Paths and Symbols → Includes
+  * Under Languages, select GNU C Click Add… - /home/roy/server-data/git/Common-C/Inc*
+  *
+  *
+  *
+  *
   ******************************************************************************
   */
 /* USER CODE END Header */
